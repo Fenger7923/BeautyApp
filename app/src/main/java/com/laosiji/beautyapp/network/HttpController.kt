@@ -1,5 +1,6 @@
 package com.laosiji.beautyapp.network
 
+import android.net.Uri
 import com.laosiji.beautyapp.Photo
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -25,9 +26,10 @@ object HttpController {
                 for (element in links) {
                     val title = element.select("a").attr("title")
                     val thumb = element.select("img[src$=.jpg]").attr("src")
+                    val res = Uri.parse(thumb).getQueryParameter("src") ?: thumb
                     val link = element.select("a[href]").attr("href")
 
-                    val photo = Photo(link, thumb, title)
+                    val photo = Photo(link, res, title)
                     resultPhoto.add(photo)
                 }
             } catch (e: IOException) {
