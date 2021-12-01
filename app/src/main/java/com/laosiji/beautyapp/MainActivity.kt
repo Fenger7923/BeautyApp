@@ -20,7 +20,6 @@ import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Divider
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
@@ -44,10 +43,11 @@ import kotlin.math.min
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        window.statusBarColor = android.graphics.Color.TRANSPARENT
+
         setContent {
             val mainViewModel: MainViewModel = viewModel()
             var wholePicSize by remember { mutableStateOf(0) }
-
             BeautyAppTheme {
                 Surface(
                     modifier = Modifier.fillMaxSize(),
@@ -63,7 +63,9 @@ class MainActivity : ComponentActivity() {
                                 Modifier.fillMaxSize(),
                                 horizontalAlignment = Alignment.CenterHorizontally
                             ) {
+                                Spacer(modifier = Modifier.padding(5.dp))
                                 Text(text = "当前有 $wholePicSize 张图片")
+                                Spacer(modifier = Modifier.padding(5.dp))
                                 Row(
                                     modifier = Modifier
                                         .height(40.dp)
@@ -148,7 +150,7 @@ class MainActivity : ComponentActivity() {
                 clickListener.invoke()
             }) {
             Text(
-                text = "来$addRange 个",
+                text = "来冲$addRange 个",
                 modifier = Modifier.align(Alignment.Center)
             )
         }
