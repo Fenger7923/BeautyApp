@@ -34,7 +34,7 @@ fun LoadingPage(
                             loadInit?.invoke()
                         }
                 ) {
-                    Image(painterResource(R.mipmap.ic_launcher_round), null, Modifier.size(80.dp))
+                    Image(painterResource(id = R.mipmap.ic_no_network), null, Modifier.size(80.dp))
                     Text((state as State.Error).errorMsg.toString())
                 }
             }
