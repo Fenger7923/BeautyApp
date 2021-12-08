@@ -36,6 +36,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.google.accompanist.glide.rememberGlidePainter
+import com.laosiji.beautyapp.network.HttpController
 import com.laosiji.beautyapp.ui.theme.BeautyAppTheme
 import com.laosiji.beautyapp.ui.view.LoadingPage
 import kotlin.math.min
@@ -46,8 +47,10 @@ class MainActivity : ComponentActivity() {
         window.statusBarColor = android.graphics.Color.TRANSPARENT
 
         setContent {
+
             val mainViewModel: MainViewModel = viewModel()
             var wholePicSize by remember { mutableStateOf(0) }
+
             BeautyAppTheme {
                 Surface(
                     modifier = Modifier.fillMaxSize(),
@@ -55,6 +58,7 @@ class MainActivity : ComponentActivity() {
                 ) {
                     val state by mainViewModel.stateLiveData.observeAsState(State.Loading)
                     val newsModel by mainViewModel.picLiveData.observeAsState(emptyList())
+
                     LoadingPage(state = state,
                         loadInit = {
                             mainViewModel.getPicList()
@@ -81,7 +85,6 @@ class MainActivity : ComponentActivity() {
                                             ), addRange = 1
                                     ) {
                                         wholePicSize += 1
-                                        veryNeedToRefresh(wholePicSize, newsModel, mainViewModel)
                                     }
                                     SizeClickableText(
                                         modifier = Modifier
@@ -93,10 +96,11 @@ class MainActivity : ComponentActivity() {
                                             ), addRange = 3
                                     ) {
                                         wholePicSize += 3
-                                        veryNeedToRefresh(wholePicSize, newsModel, mainViewModel)
                                     }
                                 }
+
                                 Spacer(modifier = Modifier.padding(5.dp))
+
                                 LazyColumn {
                                     itemsIndexed(
                                         newsModel.subList(0, min(wholePicSize, newsModel.size))
@@ -110,7 +114,7 @@ class MainActivity : ComponentActivity() {
                                             textAlign = TextAlign.Center
                                         )
                                         Image(
-                                            painter = rememberGlidePainter(item.thumb),
+                                            painter = rememberGlidePainter(item.link),
                                             contentDescription = null,
                                             modifier = Modifier
                                                 .wrapContentHeight()
@@ -123,23 +127,6 @@ class MainActivity : ComponentActivity() {
                     )
                 }
             }
-        }
-    }
-
-    private fun veryNeedToRefresh(
-        wholePicSize: Int,
-        newsModel: List<Photo>,
-        mainViewModel: MainViewModel
-    ) {
-        if (wholePicSize == newsModel.size) {
-            mainViewModel.getPicList()
-            Toast
-                .makeText(
-                    this@MainActivity,
-                    "冲太快了～，缓一缓",
-                    Toast.LENGTH_LONG
-                )
-                .show()
         }
     }
 

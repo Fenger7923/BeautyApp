@@ -2,18 +2,16 @@ package com.laosiji.beautyapp.pachong
 
 import com.laosiji.beautyapp.Photo
 import com.laosiji.beautyapp.network.HttpController
+import java.io.BufferedReader
 import java.io.BufferedWriter
 import java.io.File
 import java.io.FileOutputStream
 import java.io.FileWriter
 import java.io.InputStream
+import java.io.InputStreamReader
 import java.net.URL
 import java.net.URLConnection
 
-/**
- * @author fengerzhang
- * @date 2021/12/8 15:59
- */
 const val FAILED_FILE_NAME = "error_pic.txt"
 const val SUCCESS_FILE_NAME = "picList.txt"
 
@@ -28,7 +26,7 @@ suspend fun startToPullUrl() {
         endList.addAll(photoList)
     }
     endList.forEach {
-        downLoad(it.thumb, it.title)
+        downLoad(it.link, it.title)
     }
 }
 
@@ -50,7 +48,7 @@ fun downLoad(link: String, title: String) {
             sf.mkdirs()
         }
         val out = FileOutputStream(sf.path + "/" + title)
-        var j = 0
+        var j: Int
         while (inputStream.read().also { j = it } != -1) {
             out.write(j)
         }
@@ -60,4 +58,16 @@ fun downLoad(link: String, title: String) {
         // 失败则丢到txt里面
         writeToFile(link)
     }
+}
+
+fun readFromFile(url:String): List<String> {
+    val result: MutableList<String> = mutableListOf()
+    val fileUrl = URL(url)
+
+    val `in` = BufferedReader(InputStreamReader(fileUrl.openStream()))
+    var item: String?
+    while (`in`.readLine().also { item = it } != null) {
+        item?.let { result.add(it) }
+    }
+    return result
 }
