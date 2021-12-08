@@ -14,7 +14,8 @@ import java.net.URLConnection
  * @author fengerzhang
  * @date 2021/12/8 15:59
  */
-const val FILE_NAME = "xiuren.txt"
+const val FAILED_FILE_NAME = "error_pic.txt"
+const val SUCCESS_FILE_NAME = "picList.txt"
 
 suspend fun main() {
     startToPullUrl()
@@ -31,8 +32,8 @@ suspend fun startToPullUrl() {
     }
 }
 
-fun writeToFile(link: String) {
-    val out = BufferedWriter(FileWriter(FILE_NAME, true))
+fun writeToFile(link: String, fileName: String = FAILED_FILE_NAME) {
+    val out = BufferedWriter(FileWriter(fileName, true))
     out.write(link)
     out.newLine()
     out.close()
@@ -54,6 +55,7 @@ fun downLoad(link: String, title: String) {
             out.write(j)
         }
         inputStream.close()
+        writeToFile(title, SUCCESS_FILE_NAME)
     } catch (e: Exception) {
         // 失败则丢到txt里面
         writeToFile(link)
