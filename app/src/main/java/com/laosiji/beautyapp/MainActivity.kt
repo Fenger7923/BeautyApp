@@ -36,7 +36,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.google.accompanist.glide.rememberGlidePainter
-import com.laosiji.beautyapp.network.HttpController
 import com.laosiji.beautyapp.ui.theme.BeautyAppTheme
 import com.laosiji.beautyapp.ui.view.LoadingPage
 import kotlin.math.min
