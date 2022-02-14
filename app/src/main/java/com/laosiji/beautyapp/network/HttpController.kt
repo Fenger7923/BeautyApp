@@ -1,17 +1,16 @@
 package com.laosiji.beautyapp.network
 
 import com.laosiji.beautyapp.Photo
-import com.laosiji.beautyapp.pachong.readFromFile
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import org.jsoup.Jsoup
-import java.io.IOException
-import java.net.URI
+import java.io.BufferedReader
+import java.io.InputStreamReader
+import java.net.URL
 
 object HttpController {
     private const val BASE_URL = "http://www.xiuren.org/"
     private const val PIC_URL = "https://cdn.jsdelivr.net/gh/Fenger7923/PictureBed@master/PictureInXiuRen"
-    private const val PIC_LIST_URL= "https://cdn.jsdelivr.net/gh/Fenger7923/PictureBed@main/pictureList.txt"
+    private const val PIC_LIST_URL= "https://cdn.jsdelivr.net/gh/Fenger7923/PictureBed@master/pictureList.txt"
 
     suspend fun getPhotoFormServer(): List<Photo> {
         val resultPhoto: MutableList<Photo> = mutableListOf()
@@ -24,27 +23,17 @@ object HttpController {
         return resultPhoto
     }
 
-    suspend fun getPhotoFormServerInJava(page: Int) : List<Photo> {
-        val resultPhoto: MutableList<Photo> = ArrayList()
+    private suspend fun readFromFile(url: String): List<String> {
+        val result: MutableList<String> = mutableListOf()
         withContext(Dispatchers.IO) {
-            try {
-                val myLink = StringBuilder()
-                myLink.append(BASE_URL).append("page-$page.html")
-                val doc = Jsoup.connect(myLink.toString()).get()
-                val links = doc.select("div.loop")
+            val fileUrl = URL(url)
 
-                for (element in links) {
-//                    val link = element.select("a[href]").attr("href")
-                    val thumb = element.select("img[src$=.jpg]").attr("src")
-                    val res = URI(thumb).query.substring(4) // "从src开始"
-                    val title = res.substringAfterLast('/')
-                    val photo = Photo(res, title)
-                    resultPhoto.add(photo)
-                }
-            } catch (e: IOException) {
-                e.printStackTrace()
+            val input = BufferedReader(InputStreamReader(fileUrl.openStream()))
+            var item: String?
+            while (input.readLine().also { item = it } != null) {
+                item?.let { result.add(it) }
             }
         }
-        return resultPhoto
+        return result
     }
 }
